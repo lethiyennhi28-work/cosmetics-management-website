@@ -27,3 +27,18 @@ This is an academic project developed for the Software Engineering course at uni
 
 Database file:
 `QL_MyPham_Cocoon.sql`
+
+## Screenshots
+
+### Homepage
+
+![Homepage](Screenshots/homepage.png)
+
+### Product Page
+
+![Product Page](Screenshots/product-page.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](Screenshots/admin-dashboard.png)
+
