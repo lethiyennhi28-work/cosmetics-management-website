@@ -1,0 +1,209 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.SANPHAM>
+@{
+    ViewBag.Title = ViewBag.TenLoai;
+}
+
+@functions {
+    public string GetImage(string tenSP)
+    {
+        if (string.IsNullOrEmpty(tenSP)) return "poster.jpg";
+        string s = tenSP.ToLower();
+        if (s.Contains("bí đao")) return "nuoc_bi_dao.jpg";
+        if (s.Contains("mặt nạ") && s.Contains("nghệ")) return "mat_na_nghe.jpg";
+        if (s.Contains("tinh chất") && s.Contains("nghệ")) return "tinh_chat_nghe.jpg";
+        if (s.Contains("tẩy trang") && s.Contains("hoa hồng")) return "dau_tay_trang.jpg";
+        if (s.Contains("thạch") || s.Contains("hoa hồng")) return "thach_hoa_hong.jpg";
+        if (s.Contains("sáp") && s.Contains("sen")) return "sap_duong_am.jpg";
+        if (s.Contains("sen")) return "nuoc_sen.jpg";
+        if (s.Contains("cà phê") || s.Contains("cafe")) return "cafe_daklak.jpg";
+        return "poster.jpg";
+    }
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")" class="text-decoration-none text-dark">Trang chủ</a></li>
+            <li class="breadcrumb-item active text-success" aria-current="page">@ViewBag.TenLoai</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 p-3 mb-4 sticky-top" style="top: 20px;">
+                <h5 class="fw-bold mb-3 text-success"><i class="fas fa-filter me-2"></i>Bộ lọc</h5>
+
+                @using (Html.BeginForm("Index", "Product", FormMethod.Get))
+                {
+                    <div class="mb-3">
+                        <label class="small fw-bold">Tìm tên sản phẩm:</label>
+                        <input type="text" name="search" value="@ViewBag.SearchTerm" class="form-control form-control-sm shadow-none" placeholder="Nhập tên..." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="small fw-bold border-bottom d-block pb-1 mb-2">Loại da:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="loaiDa" id="skinAll" value="" @(string.IsNullOrEmpty(ViewBag.CurrentLoaiDa) ? "checked" : "")>
+                            <label class="form-check-label small" for="skinAll">Tất cả</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="loaiDa" id="skinOily" value="Da dầu" @(ViewBag.CurrentLoaiDa == "Da dầu" ? "checked" : "")>
+                            <label class="form-check-label small" for="skinOily">Da dầu</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="loaiDa" id="skinDry" value="Da khô" @(ViewBag.CurrentLoaiDa == "Da khô" ? "checked" : "")>
+                            <label class="form-check-label small" for="skinDry">Da khô</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="small fw-bold border-bottom d-block pb-1 mb-2">Khoảng giá (₫):</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="number" name="giaMin" value="@ViewBag.GiaMin" class="form-control form-control-sm shadow-none" placeholder="Từ" />
+                            <span class="small">-</span>
+                            <input type="number" name="giaMax" value="@ViewBag.GiaMax" class="form-control form-control-sm shadow-none" placeholder="Đến" />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="small fw-bold border-bottom d-block pb-1 mb-2">Sắp xếp theo:</label>
+                        <select name="sortOrder" class="form-select form-select-sm shadow-none">
+                            <option value="">Mặc định</option>
+                            <option value="price_asc" @(ViewBag.CurrentSort == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+                            <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Giá giảm dần</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 btn-sm fw-bold rounded-pill">ÁP DỤNG</button>
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-link w-100 text-muted small mt-2 text-decoration-none">Xóa tất cả bộ lọc</a>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <h2 class="fw-bold mb-4" style="color: #8d5330;">@ViewBag.TenLoai</h2>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning text-center shadow-sm border-0">
+                    <i class="fas fa-search me-2"></i> Không tìm thấy sản phẩm nào khớp với bộ lọc.
+                    <br />
+                    <a href="@Url.Action("Index", "Product")" class="alert-link small">Xem tất cả sản phẩm</a>.
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 col-6">
+                            <div class="card h-100 card-product position-relative border-0 shadow-sm">
+                                <span class="badge-sale">-15%</span>
+                                <a href="@Url.Action("Detail", "Product", new { id = item.MaSP })">
+                                    <img src="@Url.Content("~/Images/" + GetImage(item.TenSP))"
+                                         class="card-img-top p-3 img-product-fly"
+                                         alt="@item.TenSP"
+                                         style="height: 250px; object-fit: contain;">
+                                </a>
+
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title fw-bold text-truncate">
+                                        <a href="@Url.Action("Detail", "Product", new { id = item.MaSP })" class="text-decoration-none" style="color: #333;">
+                                            @item.TenSP
+                                        </a>
+                                    </h6>
+
+                                    <div class="mb-2 text-warning small">
+                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                    </div>
+
+                                    <div class="mt-auto">
+                                        <div class="mb-3">
+                                            <span class="fw-bold text-success fs-5">@string.Format("{0:N0} ₫", item.Gia)</span>
+                                        </div>
+
+                                        <div class="d-flex gap-2">
+                                            <a href="@Url.Action("Detail", "Product", new { id = item.MaSP })"
+                                               class="btn btn-outline-success rounded-pill flex-grow-1 fw-bold"
+                                               style="font-size: 0.85rem;">
+                                                Xem chi tiết
+                                            </a>
+
+                                            <a href="javascript:void(0)"
+                                               class="btn btn-success rounded-circle btn-add-ajax d-flex align-items-center justify-content-center shadow-sm"
+                                               data-id="@item.MaSP"
+                                               style="width: 38px; height: 38px;">
+                                                <i class="fas fa-plus text-white"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-add-ajax').click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var productId = btn.data('id');
+
+                $.ajax({
+                    url: '/Cart/AddToCartAjax',
+                    type: 'POST',
+                    data: { maSP: productId },
+                    success: function (response) {
+                        if (response.requireLogin) {
+                            if (confirm("Bạn cần đăng nhập để mua hàng. Đi đến trang đăng nhập ngay?")) {
+                                var currentUrl = window.location.pathname;
+                                var returnUrl = currentUrl + "?addProId=" + productId;
+                                window.location.href = "/Account/Login?returnUrl=" + encodeURIComponent(returnUrl);
+                            }
+                            return;
+                        }
+
+                        if (response.success) {
+                            $('#cart-badge-count').text(response.count);
+                            var productImg = btn.closest('.card-product').find('.img-product-fly');
+                            var cartIcon = $('#cart-icon-container');
+
+                            if (productImg.length && cartIcon.length) {
+                                var imgSrc = productImg.attr('src');
+                                var flyImg = $('<div>').css({
+                                    'background-image': 'url("' + imgSrc + '")',
+                                    'background-size': 'cover',
+                                    'background-position': 'center',
+                                    'width': '80px', 'height': '80px',
+                                    'border-radius': '50%',
+                                    'border': '2px solid #2d9446',
+                                    'position': 'fixed', 'z-index': '9999',
+                                    'top': productImg.offset().top - $(window).scrollTop(),
+                                    'left': productImg.offset().left
+                                });
+
+                                $('body').append(flyImg);
+
+                                flyImg.animate({
+                                    'top': cartIcon.offset().top - $(window).scrollTop(),
+                                    'left': cartIcon.offset().left,
+                                    'width': '20px', 'height': '20px', 'opacity': 0.5
+                                }, 800, function () {
+                                    $(this).remove();
+                                    cartIcon.animate({ top: "-=5px" }, 100).animate({ top: "+=5px" }, 100);
+                                });
+                            }
+                        }
+                    },
+                    error: function () { alert("Lỗi kết nối."); }
+                });
+            });
+        });
+    </script>
+}

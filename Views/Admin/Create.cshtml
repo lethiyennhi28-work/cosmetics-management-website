@@ -1,0 +1,71 @@
+﻿@model Nhom5_Mypham.Models.SANPHAM
+
+@{
+    ViewBag.Title = "Thêm mới sản phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2 class="text-center" style="margin-bottom:20px; font-weight:600;">Thêm sản phẩm</h2>
+
+<div class="container" style="max-width:650px;">
+    @using (Html.BeginForm("Create", "Admin", FormMethod.Post,
+    new { enctype = "multipart/form-data", @class = "border p-4 rounded shadow-sm" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group mb-3">
+            <label>Mã SP</label>
+            @Html.TextBoxFor(m => m.MaSP, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Tên SP</label>
+            @Html.TextBoxFor(m => m.TenSP, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Giá</label>
+            @Html.TextBoxFor(m => m.Gia, new { @class = "form-control" })
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Ngày SX</label>
+                @Html.TextBoxFor(m => m.NgaySX, new { @type = "date", @class = "form-control" })
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Hạn SD</label>
+                @Html.TextBoxFor(m => m.HanSD, new { @type = "date", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Số lượng</label>
+            @Html.TextBoxFor(m => m.SoLuong, new { @class = "form-control" })
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Loại sản phẩm</label>
+                @Html.DropDownList("MaLoai", null, new { @class = "form-control" })
+            </div>
+            <div class="col-md-6 mb-3">
+                <label>Nhà cung cấp</label>
+                @Html.DropDownList("MaNCC", null, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Hình ảnh</label>
+            <input type="file" name="upload" class="form-control" />
+        </div>
+
+        <div class="text-center">
+            <button type="submit"
+                    class="btn"
+                    style="background:#7cb342; color:white; padding:10px 25px; font-size:16px; border-radius:6px;">
+                ➕ Thêm sản phẩm
+            </button>
+        </div>
+    }
+</div>

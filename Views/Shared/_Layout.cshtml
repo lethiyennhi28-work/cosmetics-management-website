@@ -1,0 +1,159 @@
+﻿@using Nhom5_Mypham.Models
+@{
+    var khachHang = Session["KH"] as KHACHHANG;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Cocoon Vietnam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="~/Content/site.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --cocoon-brown: #6c4b2b;
+        }
+
+        .navbar-cocoon {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            z-index: 1050 !important;
+        }
+
+        footer {
+            background-color: #f9f9f9;
+            padding-top: 3rem;
+            margin-top: 3rem;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-success text-white text-center py-1 small">
+        <i class="fas fa-leaf"></i> Mỹ phẩm thuần chay Việt - Đẹp tự nhiên, trách nhiệm với động vật
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-cocoon sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="@Url.Action("Index", "Home")" style="color: var(--cocoon-brown);">COCOON</a>
+
+            <div class="collapse navbar-collapse justify-content-center">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">TRANG CHỦ</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            SẢN PHẨM
+                        </a>
+                        <ul class="dropdown-menu shadow border-0 p-0" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item py-2" href="@Url.Action("Category", "Product", new { id = "LI001" })">Chống nắng</a></li>
+                            <li><a class="dropdown-item py-2" href="@Url.Action("Category", "Product", new { id = "LI002" })">Tẩy trang</a></li>
+                            <li><a class="dropdown-item py-2" href="@Url.Action("Category", "Product", new { id = "LI003" })">Kem dưỡng</a></li>
+                            <li><a class="dropdown-item py-2" href="@Url.Action("Category", "Product", new { id = "LI004" })">Tinh chất</a></li>
+                            <li><a class="dropdown-item py-2" href="@Url.Action("Category", "Product", new { id = "LI005" })">Mặt nạ</a></li>
+
+                            <li><hr class="dropdown-divider m-0"></li>
+
+                            <li>
+                                <a class="btn w-100 fw-bold text-white text-start py-2 px-3 rounded-0"
+                                   href="@Url.Action("Index", "Product")"
+                                   style="background-color: #2d9446; border: none; border-radius: 0 0 4px 4px !important;">
+                                    Xem tất cả sản phẩm
+                                    <i class="fas fa-arrow-right float-end mt-1"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("About", "Home")">CÂU CHUYỆN</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Contact", "Home")">LIÊN HỆ</a></li>
+                </ul>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <form action="@Url.Action("Search", "Product")" method="get" class="d-none d-lg-flex">
+                    <div class="input-group" style="width: 200px;">
+                        <input type="text" name="keyword" class="form-control rounded-pill bg-light border-0 px-3" placeholder="Tìm kiếm...">
+                    </div>
+                </form>
+
+                @if (khachHang != null)
+                {
+                    <div class="dropdown">
+                        <a class="text-dark d-flex align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                            <i class="fas fa-user fs-5"></i>
+                            <span class="ms-2 fw-bold d-none d-sm-inline" style="color: var(--cocoon-brown);">Xin chào, @khachHang.HoTen.Split(' ').Last()</span>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("History", "Account")">
+                                    <i class="fas fa-history me-2"></i> Lịch sử mua hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="@Url.Action("Details", "Account")">
+                                    <i class="fas fa-address-card me-2"></i> Thông tin khách hàng
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Account")">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a href="@Url.Action("Login", "Account")" class="text-dark">
+                        <i class="fas fa-user"></i>
+                    </a>
+                }
+                <a href="@Url.Action("Index", "Cart")" class="text-dark position-relative" id="cart-icon-container">
+                    <i class="fas fa-shopping-cart" id="cart-target-icon"></i>
+                    <span id="cart-badge-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                        @(Session["Cart"] != null ? ((List<Nhom5_Mypham.Models.CartItem>)Session["Cart"]).Count : 0)
+                    </span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    <footer>
+        <div class="container pb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>VỀ COCOON</h5>
+                    <p class="small">Cocoon là thương hiệu mỹ phẩm thuần chay 100% của Việt Nam. Chúng tôi cam kết không thử nghiệm trên động vật.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>HỖ TRỢ KHÁCH HÀNG</h5>
+                    <a href="#">Hướng dẫn mua hàng</a>
+                    <a href="#">Chính sách đổi trả</a>
+                </div>
+                <div class="col-md-4">
+                    <h5>LIÊN HỆ</h5>
+                    <p><i class="fas fa-phone me-2"></i> 1900 9300</p>
+                    <p><i class="fas fa-envelope me-2"></i> cskh@cocoonvietnam.com</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center small py-3">© 2025 Cocoon Vietnam. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

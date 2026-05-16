@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.HOADON>
+@{
+    ViewBag.Title = "History";
+}
+
+<div class="container py-5">
+
+    <h3 class="fw-bold text-center mb-5" style="color: #8d5330; text-transform: uppercase;">
+        <i class="fas fa-history me-2"></i> LỊCH SỬ ĐƠN HÀNG
+    </h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center shadow-sm" role="alert">
+            <h4 class="alert-heading">Không có đơn hàng nào!</h4>
+            <p>Bạn chưa thực hiện đơn hàng nào gần đây. Hãy bắt đầu mua sắm ngay!</p>
+            <a href="@Url.Action("Index", "Product")" class="btn btn-success mt-2">Đến trang Sản phẩm</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover table-striped shadow-sm border rounded-3 overflow-hidden align-middle">
+
+                <thead class="table-success text-white">
+                    <tr>
+                        <th style="width: 20%;">Mã đơn hàng</th>
+                        <th style="width: 20%;">Ngày lập</th>
+                        <th style="width: 20%;" class="text-end">Tổng tiền (VNĐ)</th>
+                        <th style="width: 20%;" class="text-center">Trạng thái</th>
+                        <th style="width: 20%;" class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@item.MaHD</td>
+                            <td>@(item.NgayLap.HasValue ? item.NgayLap.Value.ToString("dd/MM/yyyy HH:mm") : "N/A")</td>
+                            <td class="fw-bold text-end text-success">
+                                @string.Format("{0:0,0}", item.TongTien) đ
+                            </td>
+                            <td class="text-center">
+                                @if (item.TrangThai == "Chờ duyệt")
+                                {
+                                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill"><i class="fas fa-clock me-1"></i>Chờ duyệt</span>
+                                }
+                                else if (item.TrangThai == "Đã hủy")
+                                {
+                                    <span class="badge bg-danger px-3 py-2 rounded-pill"><i class="fas fa-times-circle me-1"></i>Đã hủy</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fas fa-check-circle me-1"></i>@item.TrangThai</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.TrangThai == "Chờ duyệt")
+                                {
+                                    using (Html.BeginForm("CancelOrder", "Account", new { id = item.MaHD }, FormMethod.Post, new { @onsubmit = "return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm">
+                                            <i class="fas fa-trash-alt me-1"></i> Hủy đơn
+                                        </button>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted small italic">Không thể thao tác</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

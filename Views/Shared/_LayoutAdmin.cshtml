@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HỆ THỐNG QUẢN TRỊ - COCOON</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f4f6f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar-admin {
+            background-color: #2e7d32;
+            z-index: 1050 !important;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+            border: none;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.85) !important;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+            .nav-link:hover {
+                color: #fff !important;
+                background: rgba(255,255,255,0.15);
+                border-radius: 5px;
+            }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+        }
+    </style>
+</head>
+<body>
+    @{
+        string role = Session["ChucVu"] as string;
+        string hoTen = Session["HoTen"] as string ?? "Admin";
+    }
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-admin">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="@Url.Action("Dashboard", "Admin")">
+                <i class="fas fa-user-shield me-2"></i>ADMIN CP
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="adminNavbar">
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Admin")">
+                            <i class="fas fa-boxes me-1"></i> Kho Hàng
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("OrderList", "Admin")">
+                            <i class="fas fa-file-invoice-dollar me-1"></i> Đơn Hàng
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Order_status", "Admin")">
+                            <i class="fas fa-tasks me-1"></i> Trạng Thái
+                        </a>
+                    </li>
+
+                    @if (role != "Kế toán")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("CustomerList", "Admin")">
+                                <i class="fas fa-users me-1"></i> Khách Hàng
+                            </a>
+                        </li>
+                    }
+
+                    @if (role == "Giám đốc" || role == "Kế toán" || role == "Trưởng phòng" || role == "Phó phòng")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("EmployeeList", "Admin")">
+                                <i class="fas fa-id-badge me-1"></i> Nhân Sự
+                            </a>
+                        </li>
+                    }
+
+                    @if (role == "Kế toán" || role == "Giám đốc")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("BaoCaoLoiNhuan", "Admin")">
+                                <i class="fas fa-chart-line me-1"></i> Báo Cáo
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> @hoTen
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><span class="dropdown-item-text text-muted small fw-bold">Chức vụ: <span class="text-success">@role</span></span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Admin")">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4 flex-grow-1">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show shadow-sm">
+                <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm">
+                <i class="fas fa-exclamation-triangle me-2"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </div>
+
+    <footer class="text-center py-3 text-muted border-top mt-auto bg-white">
+        <small class="fw-bold">Hệ thống quản lý nội bộ - Cocoon Vietnam &copy; 2025</small>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

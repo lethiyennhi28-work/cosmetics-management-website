@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5 text-center">
+    <div class="mb-4">
+        <i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+    </div>
+    <h2 class="fw-bold" style="color: #8d5330;">CẢM ƠN BẠN ĐÃ ĐẶT HÀNG!</h2>
+    <p class="lead text-muted">Đơn hàng của bạn đang được xử lý và sẽ giao đến trong thời gian sớm nhất.</p>
+
+    <div class="mt-5">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-success rounded-pill px-5 py-2">
+            <i class="fas fa-arrow-left me-2"></i> TIẾP TỤC MUA SẮM
+        </a>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+﻿@{
+    Layout = null; 
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Đăng nhập Quản trị</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e9ecef;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .admin-login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .btn-cocoon {
+            background-color: #2d9446;
+            color: white;
+            font-weight: bold;
+        }
+
+            .btn-cocoon:hover {
+                background-color: #1e6b30;
+                color: white;
+            }
+    </style>
+</head>
+<body>
+    <div class="admin-login-card text-center">
+        <h3 class="fw-bold mb-1" style="color: #2d9446;">QUẢN TRỊ VIÊN</h3>
+        <p class="text-muted small mb-4">Hệ thống quản lý mỹ phẩm Cocoon</p>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger p-2 small">
+                <i class="bi bi-exclamation-triangle"></i> @ViewBag.Error
+            </div>
+        }
+
+        <form action="@Url.Action("Login", "Admin")" method="post">
+            <div class="mb-3 text-start">
+                <label class="form-label fw-bold small text-secondary">Tài khoản</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label fw-bold small text-secondary">Mật khẩu</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-cocoon w-100 py-2">ĐĂNG NHẬP</button>
+        </form>
+
+        <div class="mt-4 pt-3 border-top">
+            <a href="/" class="text-decoration-none small text-muted">← Quay về trang bán hàng</a>
+        </div>
+    </div>
+</body>
+</html>

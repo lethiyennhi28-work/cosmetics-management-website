@@ -1,0 +1,10 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.LOAISANPHAM>
+
+@foreach (var item in Model)
+{
+    <li>
+        <a class="dropdown-item" href="@Url.Action("Category", "Product", new { id = item.MaLoai })">
+            @item.TenLoai
+        </a>
+    </li>
+}

@@ -1,0 +1,50 @@
+﻿@model Nhom5_Mypham.Models.NHANVIEN
+@{
+    ViewBag.Title = "Sửa quyền nhân viên";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow border-0 mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-warning text-dark fw-bold">
+            <i class="fas fa-user-shield me-2"></i> THAY ĐỔI CHỨC VỤ NHÂN VIÊN
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.MaNV)
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mã nhân viên:</label>
+                    <input type="text" class="form-control bg-light" value="@Model.MaNV" disabled />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Họ và tên:</label>
+                    <input type="text" class="form-control bg-light" value="@Model.HoTen" disabled />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Chức vụ hiện tại:</label>
+                    <span class="badge bg-info d-block p-2">@Model.ChucVu</span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-danger">Chọn chức vụ mới:</label>
+                    @Html.DropDownListFor(model => model.ChucVu,
+                        new SelectList(ViewBag.ChucVuList),
+                        "--- Chọn chức vụ ---",
+                        new { @class = "form-select border-danger" })
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-save me-2"></i> Lưu thay đổi
+                    </button>
+                    <a href="@Url.Action("EmployeeList", "Admin")" class="btn btn-secondary w-100">Hủy</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.HOADON>
+@{
+    ViewBag.Title = "Quản lý trạng thái đơn hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-4">
+    <h3 class="fw-bold mb-4" style="color: #2d9446;"><i class="fas fa-tasks me-2"></i>QUẢN LÝ TRẠNG THÁI ĐƠN HÀNG</h3>
+
+    <div class="mb-4 d-flex gap-2">
+        <a href="@Url.Action("Order_status", "Admin")" class="btn btn-sm btn-outline-secondary @(ViewBag.CurrentFilter == null ? "active" : "")">Tất cả</a>
+        <a href="@Url.Action("Order_status", "Admin", new { statusFilter = "Chờ duyệt" })" class="btn btn-sm btn-outline-warning">Chờ duyệt</a>
+        <a href="@Url.Action("Order_status", "Admin", new { statusFilter = "Đang giao" })" class="btn btn-sm btn-outline-primary">Đang giao</a>
+        <a href="@Url.Action("Order_status", "Admin", new { statusFilter = "Hoàn tất" })" class="btn btn-sm btn-outline-success">Hoàn tất</a>
+        <a href="@Url.Action("Order_status", "Admin", new { statusFilter = "Đã hủy" })" class="btn btn-sm btn-outline-danger @(ViewBag.CurrentFilter == "Đã hủy" ? "active" : "")">Đã hủy</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Ngày Lập</th>
+                    <th>Khách hàng</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Cập nhật nhanh</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.MaHD</td>
+                        <td>@(item.NgayLap.HasValue ? item.NgayLap.Value.ToString("dd/MM/yyyy HH:mm") : "N/A")</td>
+                        <td>@(item.KHACHHANG != null ? item.KHACHHANG.HoTen : "Khách vãng lai")</td>
+                        <td class="text-danger fw-bold">@string.Format("{0:N0} ₫", item.TongTien)</td>
+                        <td>
+                            @if (item.TrangThai == "Chờ duyệt")
+                            {<span class="badge bg-warning text-dark">Chờ duyệt</span> }
+                            else if (item.TrangThai == "Đang giao")
+                            { <span class="badge bg-primary">Đang giao</span> }
+                            else if (item.TrangThai == "Hoàn tất")
+                            { <span class="badge bg-success">Hoàn tất</span> }
+                            else
+                            { <span class="badge bg-danger">Đã hủy</span>}
+
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Order_status", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@item.MaHD" />
+
+                                <div class="btn-group btn-group-sm shadow-sm">
+                                    @if (item.TrangThai == "Chờ duyệt")
+                                    {
+                                        <button name="newStatus" value="Đang giao" class="btn btn-success" title="Duyệt đơn">Duyệt đơn</button>
+                                        <button name="newStatus" value="Đã hủy" class="btn btn-danger" onclick="return confirm('Hủy và hoàn kho đơn này?')" title="Hủy đơn">Hủy</button>
+                                    }
+                                    else if (item.TrangThai == "Đang giao")
+                                    {
+                                        <button name="newStatus" value="Hoàn tất" class="btn btn-primary" title="Xác nhận giao xong">Giao xong</button>
+                                        <button name="newStatus" value="Đã hủy" class="btn btn-outline-danger"
+                                                onclick="return confirm('Xác nhận khách bom hàng và hoàn kho đơn này?')"
+                                                title="Khách bom hàng">
+                                            Bom hàng
+                                        </button>
+                                    }
+
+                                    @if (item.TrangThai != "Đã hủy")
+                                    {
+                                        <a href="@Url.Action("PrintInvoice", "Admin", new { id = item.MaHD })" target="_blank" class="btn btn-outline-secondary" title="In hóa đơn">
+                                            <i class="fas fa-print"></i>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

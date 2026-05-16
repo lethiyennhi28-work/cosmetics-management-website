@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.KHACHHANG>
+@{
+    ViewBag.Title = "Danh sách khách hàng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold" style="color: #2d9446;">👥 DANH SÁCH KHÁCH HÀNG</h3>
+        <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-secondary">↩ Quay lại</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead style="background-color: #9b59b6; color: white;">
+                <tr>
+                    <th>Mã KH</th>
+                    <th>Họ tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.MaKH</td>
+                        <td>@item.HoTen</td>
+                        <td><span class="badge bg-light text-dark border">@item.SDT</span></td>
+                        <td>@item.DiaChi</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

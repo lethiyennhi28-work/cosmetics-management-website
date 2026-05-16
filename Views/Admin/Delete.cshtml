@@ -1,0 +1,12 @@
+﻿@model Nhom5_Mypham.Models.SANPHAM
+<h2>Xác nhận xóa</h2>
+<div>
+    <p>Bạn có chắc muốn xóa sản phẩm: <strong>@Model.TenSP</strong> (Mã: @Model.MaSP) ?</p>
+    @using (Html.BeginForm("DeleteConfirmed", "Admin", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.MaSP)
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Hủy</a>
+    }
+</div>

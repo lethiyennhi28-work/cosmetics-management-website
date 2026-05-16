@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.HOADON>
+@{ ViewBag.Title = "Danh sách Đơn hàng"; }
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold" style="color: #2d9446;">📦 QUẢN LÝ ĐƠN HÀNG</h3>
+        <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-secondary">↩ Quay lại</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead style="background-color: #ff7675; color: white;">
+                <tr>
+                    <th>Mã HĐ</th>
+                    <th>Ngày lập</th>
+                    <th>Khách hàng</th>
+                    <th>Nhân viên</th>
+                    <th>Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@item.MaHD</td>
+                        <td>@(item.NgayLap.HasValue ? item.NgayLap.Value.ToString("dd/MM/yyyy HH:mm") : "N/A")</td>
+                        <td>
+                            @if (item.KHACHHANG != null)
+                            {<span>@item.KHACHHANG.HoTen</span> }
+                        else
+                        { <span class="text-muted">Khách vãng lai</span>}
+                        </td>
+                        <td>@item.MaNV</td>
+                        <td class="fw-bold text-danger">@string.Format("{0:N0} ₫", item.TongTien)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = "Bảng điều khiển (Dashboard)";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    string role = Session["ChucVu"] as string;
+    var hoTen = Session["HoTen"] as string ?? "Admin";
+}
+
+<style>
+    .report-card {
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .report-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        filter: brightness(105%);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .icon-bg {
+        opacity: 0.2;
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        font-size: 4rem;
+        transform: rotate(-15deg);
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-uppercase" style="color: #2d9446; letter-spacing: 1px;">
+                <i class="fas fa-tachometer-alt me-2"></i>Bảng điều khiển
+            </h3>
+            <p class="text-muted small mb-0">
+                Xin chào, <strong class="text-dark">@hoTen</strong> <span class="badge bg-success ms-1">@role</span>
+            </p>
+        </div>
+
+        <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-success fw-bold rounded-pill px-4 shadow-sm">
+            <i class="fas fa-box-open me-2"></i> Quản lý Kho hàng
+        </a>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <a href="@Url.Action("BaoCaoLoiNhuan", "Admin")" class="card report-card text-white h-100"
+               style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="card-body position-relative">
+                    <h6 class="text-uppercase mb-2 opacity-75">Tổng Doanh thu</h6>
+                    <h3 class="fw-bold mb-0">@string.Format("{0:N0} ₫", ViewBag.TongDoanhThu ?? 0)</h3>
+                    <div class="mt-3 small opacity-75">
+                        <i class="fas fa-file-invoice-dollar me-1"></i> Xem báo cáo chi tiết
+                    </div>
+                    <i class="fas fa-coins icon-bg"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a href="@Url.Action("Index", "Admin")" class="card report-card text-white h-100"
+               style="background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);">
+                <div class="card-body position-relative">
+                    <h6 class="text-uppercase mb-2 opacity-75">Sản phẩm tồn kho</h6>
+                    <h3 class="fw-bold mb-0">@ViewBag.SoSanPham <span class="fs-6 fw-normal">mã</span></h3>
+                    <div class="mt-3 small opacity-75">
+                        <i class="fas fa-boxes me-1"></i> Quản lý sản phẩm
+                    </div>
+                    <i class="fas fa-box-open icon-bg"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <a href="@Url.Action("CustomerList", "Admin")" class="card report-card text-white h-100"
+               style="background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);">
+                <div class="card-body position-relative">
+                    <h6 class="text-uppercase mb-2 opacity-75">Khách hàng</h6>
+                    <h3 class="fw-bold mb-0">@ViewBag.SoKhachHang <span class="fs-6 fw-normal">người</span></h3>
+                    <div class="mt-3 small opacity-75">
+                        <i class="fas fa-users me-1"></i> Danh sách thành viên
+                    </div>
+                    <i class="fas fa-user-friends icon-bg"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            @if (role == "Giám đốc")
+            {
+                <a href="@Url.Action("EmployeeList", "Admin")" class="card report-card text-white h-100"
+                   style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="card-body position-relative">
+                        <h6 class="text-uppercase mb-2 opacity-75">Nhân sự</h6>
+                        <h3 class="fw-bold mb-0">@(ViewBag.SoNhanVien ?? 0) <span class="fs-6 fw-normal">NV</span></h3>
+                        <div class="mt-3 small opacity-75">
+                            <i class="fas fa-user-cog me-1"></i> Quản lý nhân viên
+                        </div>
+                        <i class="fas fa-id-card icon-bg"></i>
+                    </div>
+                </a>
+            }
+            else if (role == "Kế toán")
+            {
+                <a href="@Url.Action("EmployeeList", "Admin")" class="card report-card text-white h-100"
+                    style="background: linear-gradient(135deg, #6610f2 0%, #bc4e9c 100%);">
+                    <div class="card-body position-relative">
+                        <h6 class="text-uppercase mb-2 opacity-75">Quỹ lương tháng</h6>
+                        <h4 class="fw-bold mb-0">@string.Format("{0:N0} ₫", ViewBag.TongLuong ?? 0)</h4>
+                        <div class="mt-3 small opacity-75">
+                            <i class="fas fa-money-check-alt me-1"></i> Xem bảng lương
+                        </div>
+                        <i class="fas fa-hand-holding-usd icon-bg"></i>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="alert alert-success d-flex align-items-center bg-white border-success shadow-sm rounded-3" style="color: #2d9446;">
+        <i class="fas fa-info-circle me-3 fs-4"></i>
+        <div>
+            <strong>Mẹo:</strong> Nhấp vào các thẻ màu phía trên để truy cập nhanh vào trang quản lý tương ứng.
+            Dữ liệu được cập nhật theo thời gian thực.
+        </div>
+    </div>
+</div>

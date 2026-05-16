@@ -1,0 +1,127 @@
+﻿@model Nhom5_Mypham.Models.KHACHHANG
+@{
+    ViewBag.Title = "Đăng ký thành viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #2d9446;
+    }
+
+    .input-group-text {
+        border-color: #ced4da;
+    }
+</style>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<div class="d-flex align-items-center justify-content-center py-5 my-4" style="min-height: 85vh; background-color: #f9f5f0;">
+
+    <div class="card border-0 shadow-lg p-3 p-md-4" style="width: 100%; max-width: 500px; border-radius: 20px;">
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+                <h3 class="fw-bold" style="color: #8d5330; text-transform: uppercase; letter-spacing: 1px;">Đăng Ký</h3>
+                <p class="text-muted small">Khám phá vẻ đẹp thuần chay cùng Cocoon</p>
+            </div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger text-center small py-2 mb-3 border-0 rounded-3">
+                    <i class="fas fa-exclamation-triangle me-1"></i> @ViewBag.Error
+                </div>
+            }
+
+            <form action="@Url.Action("Register", "Account")" method="post" onsubmit="return validateRegisterForm();">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-secondary ps-1">HỌ VÀ TÊN</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" name="HoTen" class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                               placeholder="Ví dụ: Nguyễn Văn A" required value="@Model.HoTen">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-secondary ps-1">SỐ ĐIỆN THOẠI</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <input type="text" name="SDT" class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                                   placeholder="09xxxxxxxx" required maxlength="10" minlength="10" pattern="[0-9]{10}"
+                                   title="Vui lòng nhập đúng 10 chữ số" value="@Model.SDT"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-secondary ps-1">EMAIL</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" name="Email" class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                                   placeholder="email@example.com" required value="@Model.Email">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-secondary ps-1">ĐỊA CHỈ</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        <input type="text" name="DiaChi" class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                               placeholder="Số nhà, tên đường, phường/xã..." value="@Model.DiaChi">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold small text-secondary ps-1">MẬT KHẨU</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" name="MatKhau" class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                               placeholder="Tối thiểu 6 ký tự" required minlength="6">
+                    </div>
+                </div>
+
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="g-recaptcha" data-sitekey="6LegdjAsAAAAAHGo9X7Jn91mLB0fnJYYmzgjSGGN"></div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow-sm text-uppercase"
+                        style="background-color: #2d9446; border: none; letter-spacing: 1px; transition: all 0.3s;">
+                    Đăng Ký Thành Viên
+                </button>
+            </form>
+
+            <div class="pt-4 mt-3 border-top text-center">
+                <p class="text-muted small mb-2">Bạn đã có tài khoản?</p>
+                <a href="@Url.Action("Login", "Account")" class="fw-bold text-decoration-none text-uppercase" style="color: #2d9446; font-size: 1.1rem;">
+                    ĐĂNG NHẬP NGAY <i class="fas fa-arrow-right ms-1 small"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function validateRegisterForm() {
+        var response = grecaptcha.getResponse();
+        if (response.length == 0) {
+            alert("Vui lòng xác nhận 'Không phải người máy' để tiếp tục!");
+            return false;
+        }
+        return true;
+    }
+</script>
+

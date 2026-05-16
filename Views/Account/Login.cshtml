@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .hover-link:hover {
+        color: #2d9446 !important;
+        text-decoration: underline !important;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #2d9446;
+    }
+
+    .input-group-text {
+        border-color: #ced4da;
+    }
+</style>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<div class="d-flex align-items-center justify-content-center py-5 my-4" style="min-height: 80vh; background-color: #f9f5f0;">
+
+    <div class="card border-0 shadow-lg p-3 p-md-4" style="width: 100%; max-width: 450px; border-radius: 20px;">
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+                <h3 class="fw-bold" style="color: #8d5330; text-transform: uppercase; letter-spacing: 1px;">Đăng Nhập</h3>
+                <p class="text-muted small">Chào mừng bạn quay trở lại với Cocoon</p>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success text-center small py-2 mb-3 border-0 rounded-3">
+                    <i class="fas fa-check-circle me-1"></i> @TempData["Success"]
+                </div>
+            }
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger text-center small py-2 mb-3 border-0 rounded-3">
+                    <i class="fas fa-exclamation-circle me-1"></i> @ViewBag.Error
+                </div>
+            }
+
+            <form action="@Url.Action("Login", "Account")" method="post" onsubmit="return validateMyForm();">
+                <input type="hidden" name="returnUrl" value="@Request.QueryString["returnUrl"]" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-secondary ps-1">EMAIL</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <input type="email" name="email"
+                               class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                               placeholder="Nhập email của bạn..." required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold small text-secondary ps-1">MẬT KHẨU</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text border-end-0 bg-light text-muted ps-3 rounded-start-pill">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" name="matkhau"
+                               class="form-control bg-light border-start-0 fs-6 rounded-end-pill py-3"
+                               placeholder="Nhập mật khẩu..." required>
+                    </div>
+                </div>
+
+                <div class="mb-4 d-flex justify-content-center">
+                    <div class="g-recaptcha" data-sitekey="6LegdjAsAAAAAHGo9X7Jn91mLB0fnJYYmzgjSGGN"></div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow-sm text-uppercase"
+                        style="background-color: #2d9446; border: none; letter-spacing: 1px; transition: all 0.3s;">
+                    Đăng Nhập
+                </button>
+            </form>
+
+            <div class="pt-4 mt-3 border-top text-center">
+                <p class="text-muted small mb-2">Bạn chưa có tài khoản?</p>
+                <a href="@Url.Action("Register", "Account")" class="fw-bold text-decoration-none" style="color: #2d9446;">
+                    ĐĂNG KÝ TÀI KHOẢN MỚI <i class="fas fa-arrow-right ms-1 small"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function validateMyForm() {
+        var response = grecaptcha.getResponse();
+
+        if (response.length == 0) {
+            alert("Vui lòng xác nhận bạn không phải là người máy trước khi đăng nhập!");
+            return false;
+        }
+        return true;
+    }
+</script>
+

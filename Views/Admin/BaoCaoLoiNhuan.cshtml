@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Báo cáo Lợi nhuận";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-4">
+    <div class="card shadow border-0">
+        <div class="card-header bg-white py-3 border-bottom">
+            <h4 class="text-uppercase fw-bold text-center mb-0" style="color: #2e7d32;">
+                <i class="fas fa-chart-pie me-2"></i> BÁO CÁO KẾT QUẢ KINH DOANH
+            </h4>
+            <p class="text-center text-muted small mb-0 mt-1">
+                Số liệu từ: <strong class="text-dark">@string.Format("{0:dd/MM/yyyy}", ViewBag.TuNgay)</strong>
+                đến <strong class="text-dark">@string.Format("{0:dd/MM/yyyy}", ViewBag.DenNgay)</strong>
+            </p>
+        </div>
+
+        <div class="card-body p-4">
+
+            @if (Session["ChucVu"].ToString() == "Kế toán")
+            {
+                <div class="alert alert-light border mb-4">
+                    <h6 class="fw-bold text-primary"><i class="fas fa-tools me-2"></i>Công cụ Kế toán</h6>
+                    @using (Html.BeginForm("BaoCaoLoiNhuan", "Admin", FormMethod.Get, new { @class = "row g-3 align-items-end" }))
+                    {
+                        <div class="col-md-4">
+                            <label class="small fw-bold">Từ ngày:</label>
+                            <input type="date" name="tuNgay" class="form-control" value="@string.Format("{0:yyyy-MM-dd}", ViewBag.TuNgay)" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small fw-bold">Đến ngày:</label>
+                            <input type="date" name="denNgay" class="form-control" value="@string.Format("{0:yyyy-MM-dd}", ViewBag.DenNgay)" />
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100 fw-bold">
+                                <i class="fas fa-filter me-2"></i> Lọc dữ liệu
+                            </button>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success text-center mb-4">
+                    <i class="fas fa-user-tie fa-2x mb-2 d-block"></i>
+                    <strong>Kính chào Giám Đốc!</strong><br />
+                    Dưới đây là tình hình kinh doanh tháng này.
+                </div>
+            }
+
+            <div class="row text-center g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm" style="background: #e3f2fd;">
+                        <div class="card-body">
+                            <h5 class="text-muted text-uppercase small fw-bold">Tổng Doanh Thu</h5>
+                            <h3 class="fw-bold text-primary">@string.Format("{0:N0}", ViewBag.DoanhThu) ₫</h3>
+                            <small class="text-muted">Tiền thực thu</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm" style="background: #ffebee;">
+                        <div class="card-body">
+                            <h5 class="text-muted text-uppercase small fw-bold">Tổng Chi Phí Vốn</h5>
+                            <h3 class="fw-bold text-danger">@string.Format("{0:N0}", ViewBag.TongVon) ₫</h3>
+                            <small class="text-muted">Tiền nhập hàng</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow" style="background: #e8f5e9; border: 1px solid #2e7d32 !important;">
+                        <div class="card-body">
+                            <h5 class="text-dark text-uppercase small fw-bold">Lợi Nhuận Ròng</h5>
+                            <h2 class="fw-bold text-success display-6">@string.Format("{0:N0}", ViewBag.LoiNhuan) ₫</h2>
+                            <span class="badge bg-success"><i class="fas fa-arrow-up"></i> Lãi thực tế</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

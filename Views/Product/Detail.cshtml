@@ -1,0 +1,204 @@
+﻿@model Nhom5_Mypham.Models.SANPHAM
+
+
+@{
+    ViewBag.Title = Model.TenSP;
+    int slTon = 0;
+    if (Model.TONKHO != null)
+    {
+        slTon = Model.TONKHO.SoLuongTon ?? 0;
+    }
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions {
+    public string GetImage(string tenSP)
+    {
+        if (string.IsNullOrEmpty(tenSP)) return "poster.jpg";
+        string s = tenSP.ToLower();
+        if (s.Contains("bí đao")) return "nuoc_bi_dao.jpg";
+        if (s.Contains("mặt nạ") && s.Contains("nghệ")) return "mat_na_nghe.jpg";
+        if (s.Contains("tinh chất") && s.Contains("nghệ")) return "tinh_chat_nghe.jpg";
+        if (s.Contains("tẩy trang") && s.Contains("hoa hồng")) return "dau_tay_trang.jpg";
+        if (s.Contains("thạch") || s.Contains("hoa hồng")) return "thach_hoa_hong.jpg";
+        if (s.Contains("sáp") && s.Contains("sen")) return "sap_duong_am.jpg";
+        if (s.Contains("sen")) return "nuoc_sen.jpg";
+        if (s.Contains("cà phê") || s.Contains("cafe")) return "cafe_daklak.jpg";
+        return "poster.jpg";
+    }
+}
+
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-dark">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Product")" class="text-decoration-none text-dark">Sản phẩm</a></li>
+            <li class="breadcrumb-item active text-success" aria-current="page">@Model.TenSP</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-5 mb-4">
+            <div class="border rounded p-2 shadow-sm">
+                <img src="@Url.Content("~/Images/" + GetImage(Model.TenSP))"
+                     class="img-fluid w-100 img-product-fly"
+                     alt="@Model.TenSP"
+                     style="object-fit: contain; max-height: 500px;">
+            </div>
+        </div>
+
+        <div class="col-md-7 ps-md-5">
+            <h2 class="fw-bold" style="color: #8d5330;">@Model.TenSP</h2>
+            <p class="text-muted small">Mã SP: @Model.MaSP</p>
+
+            <h3 class="fw-bold text-success my-3">@String.Format("{0:N0} ₫", Model.Gia)</h3>
+
+            <div class="mb-3 text-warning">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <span class="text-muted small ms-2">(52 đánh giá)</span>
+            </div>
+
+            <hr class="text-muted" />
+
+            <div class="mb-4">
+                <strong>Tình trạng:</strong>
+                @if (slTon > 0)
+                {
+                    <span class="badge bg-success rounded-pill px-3">Còn hàng (@slTon sản phẩm)</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger rounded-pill px-3">Hết hàng</span>
+                }
+            </div>
+
+            <div class="mb-4">
+                <ul class="list-unstyled text-muted">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 100% Thuần chay</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Không thử nghiệm trên động vật</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i> HSD: @String.Format("{0:dd/MM/yyyy}", Model.HanSD)</li>
+                </ul>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mt-4">
+                <div class="input-group" style="width: 130px;">
+                    <span class="input-group-text bg-white border-end-0">SL</span>
+                    <input type="number" id="txtQuantity" value="1" min="1" max="@slTon"
+                           class="form-control text-center border-start-0"
+                           onchange="if(parseInt(this.value) > @slTon) { alert('Chỉ còn @slTon sản phẩm trong kho!'); this.value = @slTon; }">
+                </div>
+
+                @if (slTon > 0)
+                {
+                    <button type="button" class="btn btn-success btn-lg px-4 rounded-pill fw-bold shadow-sm btn-add-detail" data-id="@Model.MaSP">
+                        <i class="fas fa-cart-plus me-2"></i> THÊM VÀO GIỎ
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary btn-lg px-4 rounded-pill fw-bold shadow-sm" disabled>
+                        <i class="fas fa-ban me-2"></i> TẠM HẾT HÀNG
+                    </button>
+                }
+            </div>
+
+            
+
+            <div class="mt-4 p-3 bg-light rounded small">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-truck text-success me-3 fs-5"></i>
+                    <span>Miễn phí vận chuyển cho đơn hàng từ 300k</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-undo text-success me-3 fs-5"></i>
+                    <span>Đổi trả trong vòng 14 ngày nếu có lỗi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4 class="fw-bold border-bottom pb-2 mb-3">Mô tả sản phẩm</h4>
+        <p>Sản phẩm <strong>@Model.TenSP</strong> được chiết xuất từ thiên nhiên, mang lại hiệu quả vượt trội và an toàn cho làn da...</p>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-add-detail').click(function (e) {
+                e.preventDefault();
+
+                var btn = $(this);
+                var productId = btn.data('id');
+                var qty = $('#txtQuantity').val();
+
+                if (qty < 1) { alert("Số lượng sai"); return; }
+
+                $.ajax({
+                    url: '/Cart/AddToCartAjax',
+                    type: 'POST',
+                    data: { maSP: productId, quantity: qty },
+                    success: function (response) {
+
+                        if (response.requireLogin) {
+                            var currentUrl = window.location.pathname;
+
+                            var returnUrl = currentUrl + "?addProId=" + productId;
+
+                            var qtyInput = $('#txtQuantity');
+                            if (qtyInput.length > 0) {
+                                returnUrl += "&qty=" + qtyInput.val();
+                            }
+
+                            window.location.href = "/Account/Login?returnUrl=" + encodeURIComponent(returnUrl);
+
+                            return;
+                        }
+                        if (response.success) {
+                            $('#cart-badge-count').text(response.count);
+
+                            var productImg = $('.img-product-fly');
+                            var cartIcon = $('#cart-icon-container');
+
+                            if (productImg.length && cartIcon.length) {
+                                var imgSrc = productImg.attr('src');
+
+                                var flyImg = $('<div>').css({
+                                    'background-image': 'url("' + imgSrc + '")',
+                                    'background-size': 'cover',
+                                    'background-position': 'center',
+
+                                    'width': '80px',
+                                    'height': '80px',
+
+                                    'border-radius': '50%',
+                                    'border': '2px solid #2d9446',
+                                    'position': 'absolute',
+                                    'z-index': '9999',
+
+                                    'top': productImg.offset().top + (productImg.height() / 2) - 40,
+                                    'left': productImg.offset().left + (productImg.width() / 2) - 40
+                                });
+
+                                $('body').append(flyImg);
+
+                                flyImg.animate({
+                                    'top': cartIcon.offset().top + 10,
+                                    'left': cartIcon.offset().left + 10,
+                                    'width': '20px',  
+                                    'height': '20px',
+                                    'opacity': 0.5
+                                }, 800, function () {
+                                    $(this).remove();
+                                    cartIcon.animate({ top: "-=5px" }, 100).animate({ top: "+=5px" }, 100);
+                                });
+                            }
+                        }
+                    },
+                    error: function () { alert("Lỗi kết nối server."); }
+                });
+            });
+        });
+    </script>
+}

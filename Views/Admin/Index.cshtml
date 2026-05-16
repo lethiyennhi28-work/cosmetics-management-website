@@ -1,0 +1,212 @@
+﻿@model IEnumerable<Nhom5_Mypham.Models.SANPHAM>
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+    string role = Session["ChucVu"] as string;
+
+    bool canAdd = (role == "Trưởng phòng" || role == "Phó phòng");
+    bool canEdit = (role == "Trưởng phòng");
+    bool canDelete = (role == "Trưởng phòng");
+    bool isBoss = (role == "Giám đốc" || role == "Kế toán");
+
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    bool showActionColumn = (canEdit || canDelete);
+}
+
+<div class="container-fluid py-5 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-success">QUẢN LÝ KHO HÀNG</h3>
+
+        <div class="d-flex gap-2">
+            @if (isBoss)
+            {
+                <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-warning fw-bold shadow-sm">
+                    <i class="fas fa-chart-line me-2"></i> Xem Báo Cáo
+                </a>
+            }
+
+            @if (canAdd)
+            {
+                <a href="@Url.Action("Create", "Admin")" class="btn btn-success fw-bold shadow-sm">
+                    <i class="fas fa-plus me-2"></i> Thêm mới
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card p-3 shadow-sm border-0 sticky-top" style="top: 80px; z-index: 99;">
+                <h5 class="text-success fw-bold"><i class="fas fa-filter me-2"></i>BỘ LỌC</h5>
+                <hr />
+                @using (Html.BeginForm("Index", "Admin", FormMethod.Get))
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tìm kiếm:</label>
+                        <input type="text" name="search" value="@Request.QueryString["search"]" class="form-control" placeholder="Tên sản phẩm..." />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Loại da:</label>
+                        <select name="loaiDa" class="form-select">
+                            <option value="">-- Tất cả --</option>
+                            <option value="Da dầu" @(Request.QueryString["loaiDa"] == "Da dầu" ? "selected" : "")>Da dầu</option>
+                            <option value="Da khô" @(Request.QueryString["loaiDa"] == "Da khô" ? "selected" : "")>Da khô</option>
+                            <option value="Da nhạy cảm" @(Request.QueryString["loaiDa"] == "Da nhạy cảm" ? "selected" : "")>Da nhạy cảm</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Giá bán từ:</label>
+                        <div class="input-group">
+                            <input type="number" name="giaTu" value="@Request.QueryString["giaTu"]" class="form-control" placeholder="0" />
+                            <span class="input-group-text">₫</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm">
+                        Lọc sản phẩm
+                    </button>
+                    <a href="@Url.Action("Index", "Admin")" class="btn btn-link w-100 text-muted mt-2 text-decoration-none small">Xóa bộ lọc</a>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow-sm border-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá bán</th>
+                                <th class="text-center">Tồn kho</th>
+                                @if (showActionColumn)
+                                {
+                                    <th class="text-center">Hành động</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var sp in Model)
+                            {
+                                int slTon = sp.TONKHO != null ? (sp.TONKHO.SoLuongTon ?? 0) : 0;
+
+                                <tr>
+                                    <td>
+                                        <img src="@Url.Content("~/Images/" + (string.IsNullOrWhiteSpace(sp.HinhAnh) ? "no-image.jpg" : sp.HinhAnh))"
+                                             style="width:50px; height:50px; object-fit:cover; border-radius:4px;"
+                                             alt="@sp.TenSP"
+                                             onerror="this.src='https://via.placeholder.com/50?text=No+Img';" />
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold text-dark">@sp.TenSP</div>
+                                        <small class="text-muted">@sp.MaSP</small>
+                                        @if (!string.IsNullOrEmpty(sp.LoaiDa))
+                                        {
+                                            <div class="mt-1"><span class="badge bg-light text-dark border">@sp.LoaiDa</span></div>
+                                        }
+                                    </td>
+                                    <td class="text-success fw-bold">@string.Format("{0:N0} ₫", sp.Gia)</td>
+
+                                    <td class="text-center">
+                                        <div class="d-flex flex-column align-items-center">
+                                            @if (slTon > 0)
+                                            {
+                                                <b class="text-primary fs-5">@slTon</b>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Hết hàng</span>
+                                            }
+
+                                            @if (canAdd)
+                                            {
+                                                <button class="btn btn-link btn-sm text-decoration-none mt-1" onclick="showModal('@sp.MaSP')">
+                                                    <i class="fas fa-plus-circle"></i> Nhập kho
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+
+                                    @if (showActionColumn)
+                                    {
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                @if (canEdit)
+                                                {
+                                                    <a href="@Url.Action("Edit", "Admin", new { id = sp.MaSP })"
+                                                       class="btn btn-warning btn-sm text-dark shadow-sm" title="Sửa thông tin">
+                                                        <i class="fas fa-pen"></i>
+                                                    </a>
+                                                }
+
+                                                @if (canDelete)
+                                                {
+                                                    using (Html.BeginForm("DeleteConfirmed", "Admin", FormMethod.Post))
+                                                    {
+                                                        @Html.AntiForgeryToken()
+                                                        @Html.Hidden("id", sp.MaSP)
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm shadow-sm"
+                                                                title="Xóa sản phẩm"
+                                                                onclick="return confirm('Bạn có chắc muốn xóa sản phẩm: @sp.TenSP không?')">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    }
+                                                }
+                                            </div>
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNhapKho" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        @using (Html.BeginForm("NhapHang", "Admin", FormMethod.Post))
+        {
+            <div class="modal-content shadow border-0">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-truck-loading me-2"></i>Nhập Kho Bổ Sung</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <input type="hidden" name="id" id="maSPInput" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Số lượng nhập thêm:</label>
+                        <input type="number" name="soLuongNhap" class="form-control form-control-lg" placeholder="Nhập số lượng..." required min="1" />
+                        <div class="form-text">Số lượng này sẽ được cộng trực tiếp vào tồn kho hiện tại.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Giá nhập vào (VNĐ):</label>
+                        <input type="number" name="giaNhap" class="form-control form-control-lg" placeholder="Nhập giá vốn..." required min="0" />
+                        <div class="form-text text-danger">* Bắt buộc nhập để tính lại giá vốn trung bình.</div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-success px-4 fw-bold">Xác nhận nhập</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function showModal(id) {
+        document.getElementById('maSPInput').value = id;
+
+        $('#modalNhapKho').modal('show');
+    }
+</script>

@@ -1,0 +1,132 @@
+﻿@model Nhom5_Mypham.Models.SANPHAM
+
+@{
+    ViewBag.Title = "Cập nhật sản phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    string curRole = Session["ChucVu"] as string;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white" style="background: #7cb342">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-edit me-2"></i>CẬP NHẬT SẢN PHẨM</h5>
+                </div>
+
+                <div class="card-body p-4">
+                    @using (Html.BeginForm("Edit", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.MaSP)
+                        @Html.HiddenFor(model => model.HinhAnh)
+
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                <label class="form-label fw-bold">Hình ảnh sản phẩm</label>
+                                <div class="border p-2 rounded mb-3 bg-light">
+                                    <img src="@Url.Content("~/Images/" + (Model.HinhAnh ?? "no-image.jpg"))"
+                                         id="previewImg"
+                                         style="width: 100%; height: 250px; object-fit: cover; border-radius: 5px;"
+                                         alt="Ảnh sản phẩm"
+                                         onerror="this.src='https://via.placeholder.com/250?text=No+Image'" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="upload" class="btn w-100 text-white" style="background: #7cb342">
+                                        <i class="fas fa-upload me-2"></i> Chọn ảnh mới
+                                    </label>
+                                    <input type="file" name="upload" id="upload" class="d-none" onchange="previewFile(this);" />
+                                </div>
+                                <small class="text-muted fst-italic">Để trống nếu muốn giữ ảnh cũ</small>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">Mã sản phẩm</label>
+                                        @Html.EditorFor(model => model.MaSP, new { htmlAttributes = new { @class = "form-control bg-light", @readonly = "readonly" } })
+                                    </div>
+
+                                    <div class="col-md-8 mb-3">
+                                        <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+                                        @Html.EditorFor(model => model.TenSP, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                        @Html.ValidationMessageFor(model => model.TenSP, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">Giá bán (VNĐ) <span class="text-danger">*</span></label>
+                                        @Html.EditorFor(model => model.Gia, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                                        @Html.ValidationMessageFor(model => model.Gia, "", new { @class = "text-danger small" })
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">Số lượng tồn</label>
+                                        @if (curRole == "Trưởng phòng" || curRole == "Phó phòng")
+                                        {
+                                            @Html.EditorFor(model => model.SoLuong, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                                            @Html.ValidationMessageFor(model => model.SoLuong, "", new { @class = "text-danger small" })
+                                            <small class="text-success fst-italic d-block mt-1" style="font-size: 0.8rem">
+                                                <i class="fas fa-check-circle"></i> Sếp được quyền sửa kho.
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            @Html.EditorFor(model => model.SoLuong, new { htmlAttributes = new { @class = "form-control bg-light", @readonly = "readonly" } })
+                                            <small class="text-muted fst-italic d-block mt-1" style="font-size: 0.8rem">
+                                                * Chỉ Trưởng/Phó phòng mới được sửa.
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">Loại sản phẩm</label>
+                                        @Html.DropDownList("MaLoai", null, htmlAttributes: new { @class = "form-select" })
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">Nhà cung cấp</label>
+                                        @Html.DropDownList("MaNCC", null, htmlAttributes: new { @class = "form-select" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Hạn sử dụng</label>
+                                    @Html.TextBoxFor(model => model.HanSD, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    @Html.ValidationMessageFor(model => model.HanSD, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="@Url.Action("Index", "Admin")" class="btn btn-secondary px-4">
+                                        <i class="fas fa-arrow-left me-2"></i> Quay lại
+                                    </a>
+                                    <button type="submit" class="btn text-white px-4 fw-bold" style="background: #7cb342">
+                                        <i class="fas fa-save me-2"></i> LƯU THAY ĐỔI
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewFile(input) {
+        var file = input.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                $("#previewImg").attr("src", reader.result);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>

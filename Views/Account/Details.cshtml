@@ -1,0 +1,99 @@
+﻿@model Nhom5_Mypham.Models.KHACHHANG
+
+@{
+    ViewBag.Title = "Thông tin khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-success text-white py-3">
+                    <h3 class="fw-bold text-center my-0">
+                        <i class="fas fa-address-card me-2"></i> THÔNG TIN HỒ SƠ
+                    </h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+
+                    @if (ViewBag.SuccessMessage != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> @ViewBag.SuccessMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-times-circle me-2"></i> @ViewBag.ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Details", "Account", FormMethod.Post, new { @class = "row g-4" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.HiddenFor(model => model.MaKH)
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(model => model.HoTen, "Họ và Tên (*)", new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.HoTen, new { htmlAttributes = new { @class = "form-control form-control-lg", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(model => model.SDT, "Số điện thoại (*)", new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.SDT, new { htmlAttributes = new { @class = "form-control form-control-lg bg-light", @required = "required", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.SDT, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(model => model.Email, "Email", new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control form-control-lg", @type = "email" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-md-6">
+                            @Html.LabelFor(model => model.NgaySinh, "Ngày sinh", new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.NgaySinh, "{0:yyyy-MM-dd}", new { htmlAttributes = new { @class = "form-control form-control-lg", @type = "date" } })
+                            @Html.ValidationMessageFor(model => model.NgaySinh, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-12">
+                            @Html.LabelFor(model => model.GioiTinh, "Giới tính", new { @class = "form-label fw-bold" })
+                            <div class="d-flex gap-5 mt-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="GioiTinh" id="male" value="Nam" @(Model.GioiTinh == "Nam" ? "checked" : "")>
+                                    <label class="form-check-label" for="male">Nam <i class="fas fa-mars text-primary"></i></label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="GioiTinh" id="female" value="Nữ" @(Model.GioiTinh == "Nữ" ? "checked" : "")>
+                                    <label class="form-check-label" for="female">Nữ <i class="fas fa-venus text-danger"></i></label>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.GioiTinh, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-12">
+                            @Html.LabelFor(model => model.DiaChi, "Địa chỉ nhận hàng", new { @class = "form-label fw-bold" })
+                            @Html.TextAreaFor(model => model.DiaChi, new { @class = "form-control", @rows = "3", @placeholder = "Nhập địa chỉ chi tiết của bạn..." })
+                            @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="col-12 d-grid">
+                            <button type="submit" class="btn btn-success btn-lg mt-3 fw-bold py-3" style="background-color: #2d9446; border: none;">
+                                <i class="fas fa-save me-2"></i> CẬP NHẬT HỒ SƠ CỦA TÔI
+                            </button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

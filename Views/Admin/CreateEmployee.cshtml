@@ -1,0 +1,78 @@
+﻿@model Nhom5_Mypham.Models.NHANVIEN
+
+@{
+    ViewBag.Title = "Thêm nhân viên mới";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-user-plus me-2"></i>THÊM NHÂN VIÊN MỚI</h5>
+                </div>
+                <div class="card-body p-4">
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+
+                    @using (Html.BeginForm("CreateEmployee", "Admin", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mã Nhân Viên <span class="text-danger">*</span></label>
+                            @Html.EditorFor(model => model.MaNV, new { htmlAttributes = new { @class = "form-control", @placeholder = "VD: NV001" } })
+
+                            @Html.ValidationMessageFor(model => model.MaNV, "", new { @class = "text-danger small fw-bold" })
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Họ và tên <span class="text-danger">*</span></label>
+                            @Html.EditorFor(model => model.HoTen, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                            @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Tên đăng nhập <span class="text-danger">*</span></label>
+                                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+
+                                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger small fw-bold" })
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Mật khẩu <span class="text-danger">*</span></label>
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", type = "password", required = "required" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger small" })
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Chức vụ</label>
+                            <select name="ChucVu" class="form-select">
+                                <option value="Nhân viên">Nhân viên</option>
+                                <option value="Phó phòng">Phó phòng</option>
+                                <option value="Trưởng phòng">Trưởng phòng</option>
+                                <option value="Kế toán">Kế toán</option>
+                                <option value="Giám đốc">Giám đốc</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Lương cơ bản</label>
+                            @Html.EditorFor(model => model.Luong, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="@Url.Action("EmployeeList", "Admin")" class="btn btn-secondary">Quay lại</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">Lưu nhân viên</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
